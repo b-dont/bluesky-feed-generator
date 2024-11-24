@@ -7,11 +7,11 @@ from server.database import db, Post
 
 
 def operations_callback(ops: defaultdict) -> None:
-    # Here we can filter, process, run ML classification, etc.
-    # After our feed alg we can save posts into our DB
-    # Also, we should process deleted posts to remove them from our DB and keep it in sync
-
-    # for example, let's create our custom feed that will contain all posts that contains alf related text
+    """
+        Parses the firehose feed for posts by users with DID that
+        matches an entry in the DB of authed dgg users
+        These posts are then added to the feed db
+    """
 
     posts_to_create = []
     for created_post in ops[models.ids.AppBskyFeedPost]['created']:
@@ -29,7 +29,10 @@ def operations_callback(ops: defaultdict) -> None:
             f': {inlined_text}'
         )
 
-        # only alf-related posts
+        # TODO Here is where the user DID is checked
+        # against the DB of authed dgg users
+
+        # example from stater feed-generateor
         if 'alf' in record.text.lower():
             reply_root = reply_parent = None
             if record.reply:
